@@ -11,3 +11,6 @@ wheels/
 
 # Data
 data/
+
+#MacOS specific
+.DS_Store
