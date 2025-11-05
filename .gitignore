@@ -11,6 +11,8 @@ wheels/
 
 # Data
 data/
+database.pickle
+song_index.pickle
 
 #MacOS specific
 .DS_Store
