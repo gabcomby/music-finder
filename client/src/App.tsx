@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import AudioUploader from "./components/custom/AudioUploader";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+    <div className="w-full min-h-screen flex flex-col p-5 justify-between items-center">
+      <div className="flex flex-col">
+        <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+          Music Finder
+        </h1>
+        <p className="text-muted-foreground text-xl">
+          A simple recreation of Shazam using Python.
         </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+      <AudioUploader />
+      <p className="leading-7 [&:not(:first-child)]:mt-6 text-center">
+        Made with ❤️ by{" "}
+        <a
+          href="https://github.com/gabcomby"
+          target="_blank"
+          className="text-primary font-medium underline underline-offset-4"
+        >
+          @gabcomby
+        </a>{" "}
+        using the{" "}
+        <a
+          href="https://michaelstrauss.dev/shazam-in-python"
+          target="_blank"
+          className="text-primary font-medium underline underline-offset-4"
+        >
+          incredible work of Michael Strauss.
+        </a>
       </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
