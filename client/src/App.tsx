@@ -1,6 +1,7 @@
 import AudioUploader from "./components/custom/AudioUploader";
 import websiteText from "./assets/websiteText";
 import SongAdder from "./components/custom/SongAdder";
+import { Separator } from "./components/ui/separator";
 
 function App() {
   return (
@@ -13,8 +14,13 @@ function App() {
           {websiteText.websiteSubtitle}
         </p>
       </div>
-      <AudioUploader />
-      <SongAdder />
+      <div className="flex flex-col w-full items-center gap-6">
+        <AudioUploader />
+        <div className="flex items-center w-1/3">
+          <Separator />
+        </div>
+        <SongAdder />
+      </div>
       <p className="leading-7 [&:not(:first-child)]:mt-6 text-center">
         {websiteText.creditPart1}{" "}
         <a
