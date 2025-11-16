@@ -1,33 +1,36 @@
 import AudioUploader from "./components/custom/AudioUploader";
+import websiteText from "./assets/websiteText";
+import SongAdder from "./components/custom/SongAdder";
 
 function App() {
   return (
     <div className="w-full min-h-screen flex flex-col p-5 justify-between items-center">
       <div className="flex flex-col">
         <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-          Music Finder
+          {websiteText.websiteTitle}
         </h1>
         <p className="text-muted-foreground text-xl">
-          A simple recreation of Shazam using Python.
+          {websiteText.websiteSubtitle}
         </p>
       </div>
       <AudioUploader />
+      <SongAdder />
       <p className="leading-7 [&:not(:first-child)]:mt-6 text-center">
-        Made with ❤️ by{" "}
+        {websiteText.creditPart1}{" "}
         <a
-          href="https://github.com/gabcomby"
+          href={websiteText.creditLink1.url}
           target="_blank"
           className="text-primary font-medium underline underline-offset-4"
         >
-          @gabcomby
+          {websiteText.creditLink1.text}
         </a>{" "}
-        using the{" "}
+        {websiteText.creditPart2}{" "}
         <a
-          href="https://michaelstrauss.dev/shazam-in-python"
+          href={websiteText.creditLink2.url}
           target="_blank"
           className="text-primary font-medium underline underline-offset-4"
         >
-          incredible work of Michael Strauss.
+          {websiteText.creditLink2.text}
         </a>
       </p>
     </div>

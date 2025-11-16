@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/shadcn-io/dropzone";
 import { useState } from "react";
 import { useAudioRecorder } from "@fixhq/react-audio-voice-recorder";
+import websiteText from "@/assets/websiteText";
 
 const AudioUploader = () => {
   // For file uploader
@@ -37,15 +38,15 @@ const AudioUploader = () => {
             if (recordingBlob) console.log(recordingBlob);
           }}
         >
-          <Square /> Stop Recording ({recordingTime}s)
+          <Square /> {websiteText.stopRecordingButton} ({recordingTime}s)
         </Button>
       ) : (
         <Button variant="outline" size="sm" onClick={startRecording}>
-          <Mic /> Record Live Audio
+          <Mic /> {websiteText.recordLiveAudioButton}
         </Button>
       )}
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-center">
-        or
+        {websiteText.orText}
       </h4>
       <Dropzone
         maxFiles={1}
