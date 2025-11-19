@@ -1,16 +1,28 @@
 from database import addMusicToDatabase, findMusicInDatabase
 import scipy as sp
 import pickle
+from fastapi import FastAPI, File, UploadFile
+
+app = FastAPI()
 
 
-def main():
+@app.get("/search")
+def search_music(file: UploadFile = File(...)):
     songIndex = pickle.load(open("song_index.pickle", "rb"))
-    addMusicToDatabase("./data/Fred Again - Victory Lap Five.wav")
-    matches = findMusicInDatabase(
-        "./data/test1.wav")
-    for song_id, score in matches:
-        print(f"{songIndex[song_id]}: Score of {score[1]} at {score[0]}")
+    file_data = file.file.read()
+    sp.io.wavfile.write("temp.wav", 44100, sp.frombuffer(
+        file_data, dtype=sp.int16))
+    matches = findMusicInDatabase("temp.wav")
+    results = {songIndex[song_id]: score for song_id, score in matches}
+    file.file.close()
+    return results
 
 
-if __name__ == "__main__":
-    main()
+@app.post("/addSong")
+def add_song(file: UploadFile = File(...)):
+    file_data = file.file.read()
+    sp.io.wavfile.write("temp.wav", 44100, sp.frombuffer(
+        file_data, dtype=sp.int16))
+    addMusicToDatabase("temp.wav")
+    file.file.close()
+    return {"message": "Song added successfully"}
