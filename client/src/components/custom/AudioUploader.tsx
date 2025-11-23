@@ -6,16 +6,29 @@ import {
   DropzoneContent,
   DropzoneEmptyState,
 } from "@/components/ui/shadcn-io/dropzone";
-import { useState } from "react";
+// import { useState } from "react";
 import { useAudioRecorder } from "@fixhq/react-audio-voice-recorder";
 import websiteText from "@/assets/websiteText";
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://127.0.0.1:8000/",
+});
 
 const AudioUploader = () => {
   // For file uploader
-  const [files, setFiles] = useState<File[] | undefined>();
-  const handleDrop = (files: File[]) => {
-    console.log(files);
-    setFiles(files);
+  // const [files, setFiles] = useState<File[] | undefined>();
+  const handleDrop = async (files: File[]) => {
+    //console.log(files);
+    //setFiles(files);
+    const formData = new FormData();
+    formData.append("file", files[0]);
+    const res = await api.post("search", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(res.data);
   };
 
   // For live audio recorder
@@ -54,7 +67,7 @@ const AudioUploader = () => {
         minSize={1024}
         onDrop={handleDrop}
         onError={console.error}
-        src={files}
+        // src={files}
       >
         <DropzoneEmptyState />
         <DropzoneContent />
