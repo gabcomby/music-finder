@@ -12,7 +12,7 @@ import websiteText from "@/assets/websiteText";
 import axios from "axios";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import type { MatchResults } from "@/schemas/schemas";
+import type { SearchResult } from "@/schemas/schemas";
 import { Skeleton } from "../ui/skeleton";
 import ShowResults from "./ShowResults";
 
@@ -23,7 +23,7 @@ const api = axios.create({
 const AudioUploader = () => {
   const queryClient = useQueryClient();
   // For file uploader
-  const [results, setResults] = useState<MatchResults | undefined>();
+  const [results, setResults] = useState<SearchResult | undefined>();
 
   const { mutate, isPending, isSuccess, isIdle } = useMutation({
     mutationFn: async (files: File[]) => {
@@ -36,7 +36,6 @@ const AudioUploader = () => {
           },
         });
         setResults(res.data);
-        console.log(results);
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
           throw error;
@@ -60,9 +59,9 @@ const AudioUploader = () => {
   } = useAudioRecorder();
 
   return (
-    <div className="flex flex-col w-1/6 gap-4">
-      {isPending && <Skeleton className="h-[200px]" />}
-      {isSuccess && <ShowResults />}
+    <div className="flex flex-col gap-4">
+      {isPending && <Skeleton className="w-[200px] h-[200px]" />}
+      {isSuccess && results != undefined && <ShowResults results={results} />}
       {isIdle && (
         <>
           {isRecording ? (

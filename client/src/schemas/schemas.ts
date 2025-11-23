@@ -1,3 +1,5 @@
-export type SongMatch = [offset: number, score: number];
-
-export type MatchResults = Record<string, SongMatch>;
+export type SearchResult = {
+  song_name: string;
+  offset: number;
+  score: number;
+};

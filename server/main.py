@@ -1,10 +1,12 @@
 import pickle
 
 import scipy as sp
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import addMusicToDatabase, findMusicInDatabase
+
+SONG_MATCH_THRESHOLD = 50
 
 app = FastAPI()
 
@@ -19,19 +21,21 @@ app.add_middleware(
 )
 
 
-@app.get("/test")
-def test_endpoint():
-    return {"message": "API is working"}
-
-
 @app.post("/search")
 def search_music(file: UploadFile = File(...)):
     songIndex = pickle.load(open("song_index.pickle", "rb"))
     file_data = file.file.read()
-    matches = findMusicInDatabase(file_data)
-    results = {songIndex[song_id]: score for song_id, score in matches}
+    song_id, (offset, score) = findMusicInDatabase(file_data)
     file.file.close()
-    return results
+    if (score) > SONG_MATCH_THRESHOLD:
+        return {
+            "song_name": songIndex[song_id],
+            "offset": offset,
+            "score": score,
+        }
+    else:
+        raise HTTPException(status_code=404, detail="No satisfying match found in DB")
+    # results = {songIndex[song_id]: score for song_id, score in matches}
 
 
 @app.post("/addSong")

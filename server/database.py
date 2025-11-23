@@ -87,4 +87,5 @@ def findMusicInDatabase(file_data):
     # Sort the scores for the user
     scores = list(sorted(scores.items(), key=lambda x: x[1][1], reverse=True))
 
-    return scores
+    # Return the top scoring song
+    return scores[0]
