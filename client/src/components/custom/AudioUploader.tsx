@@ -10,25 +10,44 @@ import {
 import { useAudioRecorder } from "@fixhq/react-audio-voice-recorder";
 import websiteText from "@/assets/websiteText";
 import axios from "axios";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import type { MatchResults } from "@/schemas/schemas";
+import { Skeleton } from "../ui/skeleton";
+import ShowResults from "./ShowResults";
 
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/",
 });
 
 const AudioUploader = () => {
+  const queryClient = useQueryClient();
   // For file uploader
-  // const [files, setFiles] = useState<File[] | undefined>();
+  const [results, setResults] = useState<MatchResults | undefined>();
+
+  const { mutate, isPending, isSuccess, isIdle } = useMutation({
+    mutationFn: async (files: File[]) => {
+      try {
+        const formData = new FormData();
+        formData.append("file", files[0]);
+        const res = await api.post("search", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        setResults(res.data);
+        console.log(results);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw error;
+        }
+        throw error;
+      }
+    },
+  });
+
   const handleDrop = async (files: File[]) => {
-    //console.log(files);
-    //setFiles(files);
-    const formData = new FormData();
-    formData.append("file", files[0]);
-    const res = await api.post("search", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    console.log(res.data);
+    mutate(files);
   };
 
   // For live audio recorder
@@ -42,36 +61,42 @@ const AudioUploader = () => {
 
   return (
     <div className="flex flex-col w-1/6 gap-4">
-      {isRecording ? (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            stopRecording();
-            if (recordingBlob) console.log(recordingBlob);
-          }}
-        >
-          <Square /> {websiteText.stopRecordingButton} ({recordingTime}s)
-        </Button>
-      ) : (
-        <Button variant="outline" size="sm" onClick={startRecording}>
-          <Mic /> {websiteText.recordLiveAudioButton}
-        </Button>
+      {isPending && <Skeleton className="h-[200px]" />}
+      {isSuccess && <ShowResults />}
+      {isIdle && (
+        <>
+          {isRecording ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                stopRecording();
+                if (recordingBlob) console.log(recordingBlob);
+              }}
+            >
+              <Square /> {websiteText.stopRecordingButton} ({recordingTime}s)
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" onClick={startRecording}>
+              <Mic /> {websiteText.recordLiveAudioButton}
+            </Button>
+          )}
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-center">
+            {websiteText.orText}
+          </h4>
+          <Dropzone
+            maxFiles={1}
+            maxSize={1024 * 1024 * 10}
+            minSize={1024}
+            onDrop={handleDrop}
+            onError={console.error}
+            // src={files}
+          >
+            <DropzoneEmptyState />
+            <DropzoneContent />
+          </Dropzone>
+        </>
       )}
-      <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-center">
-        {websiteText.orText}
-      </h4>
-      <Dropzone
-        maxFiles={1}
-        maxSize={1024 * 1024 * 10}
-        minSize={1024}
-        onDrop={handleDrop}
-        onError={console.error}
-        // src={files}
-      >
-        <DropzoneEmptyState />
-        <DropzoneContent />
-      </Dropzone>
     </div>
   );
 };
